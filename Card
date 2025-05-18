@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import confetti from "canvas-confetti";
+
+export default function GiftCard() {
+  const [revealed, setRevealed] = useState(false);
+  const [audioOn, setAudioOn] = useState(true);
+
+  const handleReveal = () => {
+    setRevealed(true);
+    confetti({ particleCount: 100, spread: 70 });
+    const audio = document.getElementById("bg-music");
+    if (audioOn) audio.play();
+  };
+
+  const toggleAudio = () => {
+    const audio = document.getElementById("bg-music");
+    if (audio.paused) audio.play();
+    else audio.pause();
+    setAudioOn(!audioOn);
+  };
+
+  return (
+    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-black to-gray-900 text-white font-sans relative overflow-hidden">
+      <audio id="bg-music" loop>
+        <source src="/music/lata-retro.mp3" type="audio/mpeg" />
+      </audio>
+
+      {!revealed ? (
+        <motion.div
+          className="flex flex-col items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <motion.div
+            onClick={handleReveal}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gradient-to-r from-gray-800 to-black rounded-2xl p-6 w-96 h-56 shadow-2xl cursor-pointer relative"
+          >
+            <h2 className="text-lg font-semibold">American Express</h2>
+            <p className="text-2xl mt-10 tracking-widest font-bold">PRANJAL CHAND</p>
+            <p className="absolute bottom-4 right-4 text-sm italic">Swipe the card</p>
+          </motion.div>
+        </motion.div>
+      ) : (
+        <AnimatePresence>
+          <motion.div
+            key="letter"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2 }}
+            className="max-w-2xl text-center bg-yellow-100 text-black p-8 rounded-xl shadow-2xl border-4 border-yellow-300 font-serif relative"
+            style={{
+              backgroundImage: "url('/parchment-bg.png')",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <h2 className="text-3xl mb-4 font-bold">To Pranjal Chand</h2>
+            <p className="text-xl leading-loose italic">
+              You're not just a name on a card… You're a priceless treasure in my
+              heart. Thank you for being you.
+            </p>
+          </motion.div>
+        </AnimatePresence>
+      )}
+
+      <button
+        onClick={toggleAudio}
+        className="absolute top-4 right-4 text-xl text-white bg-black bg-opacity-40 p-2 rounded-full"
+      >
+        {audioOn ? <FaVolumeUp /> : <FaVolumeMute />}
+      </button>
+    </div>
+  );
+}
